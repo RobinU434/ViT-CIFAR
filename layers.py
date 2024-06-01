@@ -5,7 +5,9 @@ import torchsummary
 
 
 class TransformerEncoder(nn.Module):
-    def __init__(self, feats:int, mlp_hidden:int, head:int=8, dropout:float=0.):
+    def __init__(
+        self, feats: int, mlp_hidden: int, head: int = 8, dropout: float = 0.0
+    ):
         super(TransformerEncoder, self).__init__()
         self.la1 = nn.LayerNorm(feats)
         self.msa = MultiHeadSelfAttention(feats, head=head, dropout=dropout)
@@ -26,7 +28,7 @@ class TransformerEncoder(nn.Module):
 
 
 class MultiHeadSelfAttention(nn.Module):
-    def __init__(self, feats:int, head:int=8, dropout:float=0.):
+    def __init__(self, feats: int, head: int = 8, dropout: float = 0.0):
         super(MultiHeadSelfAttention, self).__init__()
         self.head = head
         self.feats = feats
@@ -41,32 +43,31 @@ class MultiHeadSelfAttention(nn.Module):
 
     def forward(self, x):
         b, n, f = x.size()
-        q = self.q(x).view(b, n, self.head, self.feats//self.head).transpose(1,2)
-        k = self.k(x).view(b, n, self.head, self.feats//self.head).transpose(1,2)
-        v = self.v(x).view(b, n, self.head, self.feats//self.head).transpose(1,2)
+        q = self.q(x).view(b, n, self.head, self.feats // self.head).transpose(1, 2)
+        k = self.k(x).view(b, n, self.head, self.feats // self.head).transpose(1, 2)
+        v = self.v(x).view(b, n, self.head, self.feats // self.head).transpose(1, 2)
 
-        score = F.softmax(torch.einsum("bhif, bhjf->bhij", q, k)/self.sqrt_d, dim=-1) #(b,h,n,n)
-        attn = torch.einsum("bhij, bhjf->bihf", score, v) #(b,n,h,f//h)
+        score = F.softmax(
+            torch.einsum("bhif, bhjf->bhij", q, k) / self.sqrt_d, dim=-1
+        )  # (b,h,n,n)
+        attn = torch.einsum("bhij, bhjf->bihf", score, v)  # (b,n,h,f//h)
         o = self.dropout(self.o(attn.flatten(2)))
         return o
 
+
 class MultiHeadDepthwiseSelfAttention(nn.Module):
-    def __init__(self, feats:int, head:int=8, dropout:float=0):
+    def __init__(self, feats: int, head: int = 8, dropout: float = 0):
         super(MultiHeadDepthwiseSelfAttention, self).__init__()
         ...
 
-    def forward(self, x):
-        
-        ...
+    def forward(self, x): ...
 
-if __name__=="__main__":
-    b,n,f = 4, 16, 128
-    x = torch.randn(b,n,f)
+
+if __name__ == "__main__":
+    b, n, f = 4, 16, 128
+    x = torch.randn(b, n, f)
     # net = MultiHeadSelfAttention(f)
     net = TransformerEncoder(f)
-    torchsummary.summary(net, (n,f))
+    torchsummary.summary(net, (n, f))
     # out = net(x)
     # print(out.shape)
-
-
-

@@ -186,7 +186,7 @@ if __name__ == "__main__":
         max_epochs=args.max_epochs,
         # weights_summary="full",
         # progress_bar_refresh_rate=refresh_rate,
-        callbacks=LearningRateMonitor("epoch")
+        callbacks=LearningRateMonitor("epoch"),
     )
     trainer.fit(model=net, train_dataloader=train_dl, val_dataloaders=test_dl)
     if not args.dry_run:
