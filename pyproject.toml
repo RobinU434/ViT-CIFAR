@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "vit-cifar"
+version = "0.1.0"
+description = ""
+authors = ["Robin Uhrich <robin.uhrich@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+torch = "^2.3.0"
+torchvision = "^0.18.0"
+torchsummary = "^1.5.1"
+pytorch-lightning = "1.2.1"
+comet-ml = "3.3.5"
+matplotlib = "^3.9.0"
+numpy = "^1.26.4"
+pandas = "^2.2.2"
+scipy = "^1.13.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
